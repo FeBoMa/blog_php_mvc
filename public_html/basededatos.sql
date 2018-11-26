@@ -1,0 +1,1 @@
+CREATE TABLE `blog_php_mvc`.`posts` ( `id` INT NOT NULL AUTO_INCREMENT , `title` VARCHAR(100) NOT NULL , `author` VARCHAR(100) NOT NULL , `content` TEXT NOT NULL , `created` DATETIME NOT NULL , `modified` DATETIME NOT NULL , `image` VARCHAR(512) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

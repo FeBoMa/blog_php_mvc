@@ -1,0 +1,8 @@
+{
+    "name": "blog_php_mvc",
+    "version": "1.0.0",
+    "keywords": ["util", "functional", "server", "client", "browser"],
+    "author": "Ziroks",
+    "contributors": [],
+    "dependencies": {}
+}
