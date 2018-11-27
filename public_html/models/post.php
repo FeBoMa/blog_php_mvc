@@ -44,7 +44,7 @@ class Post {
         // preparamos la sentencia y reemplazamos :id con el valor de $id
         $req->execute(array('id' => $id));
         $post = $req->fetch();
-        return new Post($post['id'], $post['author'], $post['content']);
+        return new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image']);
     }
 
     public static function insert($title, $author, $content, $image) {
