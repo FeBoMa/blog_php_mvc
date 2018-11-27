@@ -25,13 +25,15 @@ class PostsController {
     }
 
     public function formInsert() {
-
-        if (!isset($_POST['title']) && !isset($_POST['author']) && !isset($_POST['content']) && !isset($_POST['image'])) {
+        $title = $_POST["title"];
+        $author = $_POST["author"];
+        $content = $_POST["content"];
+        $image = !empty($_FILES["image"]["name"]) ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"]) : "";
+        
+        if (!isset($title) && !isset($author) && !isset($content) && !isset($image)) {
             return call('pages', 'error');
         }
-        $post = Post::insert($_POST['title'], $_POST['author'], $_POST['content'], $_POST['image']);
-
-        //($title, $author, $content,$image)
+        $post = Post::insert($title, $author, $content, $image);
 
         require_once('views/posts/formInsert.php');
     }

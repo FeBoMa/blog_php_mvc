@@ -48,18 +48,21 @@ class Post {
     }
 
     public static function insert($title, $author, $content, $image) {
+        //echo $title, $author, $content, $image;
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $req = $db->prepare('INSERT INTO posts (title, author, content, created, modified, image) VALUES (:title, :author, :content, :created, :modified, :image)');
 
         // preparamos la sentencia y reemplazamos :id con el valor de $id
+        $fecha = date('Y-m-d H:i:s');
         $req->bindParam(":title", $title);
         $req->bindParam(":author", $author);
         $req->bindParam(":content", $content);
-        $req->bindParam(":created", date('Y-m-d H:i:s'));
-        $req->bindParam(":modified", date('Y-m-d H:i:s'));
+        $req->bindParam(":created", $fecha);
+        $req->bindParam(":modified", $fecha);
         $req->bindParam(":image", $image);
         $req->execute();
+        Post::uploadPhoto($image);
     }
 
     public static function update($id, $author, $content) {
@@ -85,16 +88,16 @@ class Post {
         $req->execute();
     }
 
-    function uploadPhoto() {
-
+    function uploadPhoto($imgFich) {
         $result_message = "";
 
         // now, if image is not empty, try to upload the image
-        if ($this->image) {
+        if ($imgFich) {
 
             // sha1_file() function is used to make a unique file name
             $target_directory = "uploads/";
-            $target_file = $target_directory . $this->image;
+
+            $target_file = $target_directory . $imgFich;
             $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
 
             // error message is empty
