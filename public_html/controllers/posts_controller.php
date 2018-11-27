@@ -26,13 +26,16 @@ class PostsController {
 
     public function formInsert() {
 
-        if (!isset($_POST['author']) && !isset($_POST['content'])) {
+        if (!isset($_POST['title']) && !isset($_POST['author']) && !isset($_POST['content']) && !isset($_POST['image'])) {
             return call('pages', 'error');
         }
-        $post = Post::insert($_POST['author'], $_POST['content']);
+        $post = Post::insert($_POST['title'], $_POST['author'], $_POST['content'], $_POST['image']);
+
+        //($title, $author, $content,$image)
 
         require_once('views/posts/formInsert.php');
     }
 
 }
+
 ?>
