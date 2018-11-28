@@ -31,7 +31,7 @@ class Post {
         // creamos una lista de objectos post y recorremos la respuesta de la
         // consulta
         foreach ($req->fetchAll() as $post) {
-            $list[] = new Post($post['id'], $post['title'], $post['author'], $post['content'],$post['created'],$post['modified'],$post['image']);
+            $list[] = new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image']);
         }
         return $list;
     }
@@ -65,17 +65,24 @@ class Post {
         Post::uploadPhoto($image);
     }
 
-    public static function update($id, $author, $content) {
+    public static function update($id, $title, $author, $content, $image, $actuFoto) {
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
-        $req = $db->prepare('UPDATE posts SET author = :author, content = :content WHERE id = :id');
-
+        $req = $db->prepare('UPDATE posts SET title = :title, author = :author, content = :content, modified = :modified, image = :image  WHERE id = :id');
+        //UPDATE `posts` SET `content` = 'content' WHERE `posts`.`id` = 2;
         // preparamos la sentencia y reemplazamos :id con el valor de $id
-
-        $req->bindParam(":id", $id);
+      
+        $fecha = date('Y-m-d H:i:s');
+        $req->bindParam(":title", $title);
         $req->bindParam(":author", $author);
         $req->bindParam(":content", $content);
+        $req->bindParam(":modified", $fecha);
+        $req->bindParam(":image", $image);
+        $req->bindParam(":id", $id);
         $req->execute();
+        if ($actuFoto) {
+            Post::uploadPhoto($image);
+        }
     }
 
     public static function delete($id) {
