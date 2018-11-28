@@ -31,7 +31,7 @@ class Post {
         // creamos una lista de objectos post y recorremos la respuesta de la
         // consulta
         foreach ($req->fetchAll() as $post) {
-            $list[] = new Post($post['id'], $post['author'], $post['content']);
+            $list[] = new Post($post['id'], $post['title'], $post['author'], $post['content'],$post['created'],$post['modified'],$post['image']);
         }
         return $list;
     }
