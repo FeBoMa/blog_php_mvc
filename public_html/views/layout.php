@@ -6,7 +6,7 @@
             <header>
                 <a href='/blog_php_mvc/public_html'>Home</a>
                 <a href='?controller=posts&action=index'>Posts</a>
-                <a href='?controller=posts&action=insert'>Insertar</a>
+                <a href='?controller=categories&action=indexCat'>Categorias</a>
             </header>
 
             <?php require_once('routes.php'); ?>

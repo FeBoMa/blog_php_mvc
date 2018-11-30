@@ -12,8 +12,9 @@ class Post {
     public $created;
     public $modified;
     public $image;
+    public $category_id;
 
-    public function __construct($id, $title, $author, $content, $created, $modified, $image) {
+    public function __construct($id, $title, $author, $content, $created, $modified, $image, $category_id) {
         $this->id = $id;
         $this->title = $title;
         $this->author = $author;
@@ -21,6 +22,7 @@ class Post {
         $this->created = $created;
         $this->modified = $modified;
         $this->image = $image;
+        $this->category_id = $category_id;
     }
 
     public static function all() {
@@ -31,7 +33,7 @@ class Post {
         // creamos una lista de objectos post y recorremos la respuesta de la
         // consulta
         foreach ($req->fetchAll() as $post) {
-            $list[] = new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image']);
+            $list[] = new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image'], $post['category_id']);
         }
         return $list;
     }
@@ -44,14 +46,14 @@ class Post {
         // preparamos la sentencia y reemplazamos :id con el valor de $id
         $req->execute(array('id' => $id));
         $post = $req->fetch();
-        return new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image']);
+        return new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image'], $post['category_id']);
     }
 
-    public static function insert($title, $author, $content, $image) {
+    public static function insert($title, $author, $content, $image, $catId) {
         //echo $title, $author, $content, $image;
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
-        $req = $db->prepare('INSERT INTO posts (title, author, content, created, modified, image) VALUES (:title, :author, :content, :created, :modified, :image)');
+        $req = $db->prepare('INSERT INTO posts (title, author, content, created, modified, image, category_id) VALUES (:title, :author, :content, :created, :modified, :image, :category_id)');
 
         // preparamos la sentencia y reemplazamos :id con el valor de $id
         $fecha = date('Y-m-d H:i:s');
@@ -61,23 +63,25 @@ class Post {
         $req->bindParam(":created", $fecha);
         $req->bindParam(":modified", $fecha);
         $req->bindParam(":image", $image);
+        $req->bindParam(":category_id", $catId);
         $req->execute();
         Post::uploadPhoto($image);
     }
 
-    public static function update($id, $title, $author, $content, $image, $actuFoto) {
+    public static function update($id, $title, $author, $content, $image, $actuFoto, $catId) {
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
-        $req = $db->prepare('UPDATE posts SET title = :title, author = :author, content = :content, modified = :modified, image = :image  WHERE id = :id');
+        $req = $db->prepare('UPDATE posts SET title = :title, author = :author, content = :content, modified = :modified, image = :image, category_id = :category_id WHERE id = :id');
         //UPDATE `posts` SET `content` = 'content' WHERE `posts`.`id` = 2;
         // preparamos la sentencia y reemplazamos :id con el valor de $id
-      
+
         $fecha = date('Y-m-d H:i:s');
         $req->bindParam(":title", $title);
         $req->bindParam(":author", $author);
         $req->bindParam(":content", $content);
         $req->bindParam(":modified", $fecha);
         $req->bindParam(":image", $image);
+        $req->bindParam(":category_id", $catId);
         $req->bindParam(":id", $id);
         $req->execute();
         if ($actuFoto) {
@@ -162,6 +166,26 @@ class Post {
         }
 
         return $result_message;
+    }
+
+    function readCat() {
+        /*
+          $list = [];
+          $db = Db::getInstance();
+          $req = $db->query('SELECT * FROM categories ORDER BY name');
+
+          // creamos una lista de objectos post y recorremos la respuesta de la
+          // consulta
+          foreach ($req->fetchAll() as $cat) {
+          $list[] = new Post($cat['id'], $cat['name'], $cat['created'], $cat['modified']);
+          }
+          return $list;
+         */
+        $db = Db::getInstance();
+        //select all data
+        $stmt = $db->query('SELECT * FROM categories ORDER BY name');
+        $stmt->execute();
+        return $stmt;
     }
 
 }

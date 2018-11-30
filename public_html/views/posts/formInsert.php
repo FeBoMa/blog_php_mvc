@@ -9,6 +9,21 @@
             <td><input type='text' name='author'/></td>
         </tr>
         <tr>
+            <td>Category</td>
+            <td>
+                <?php
+                echo "<select class='form-control' name='category_id'>";
+                echo "<option>Select category...</option>";
+
+                while ($row_category = $catlist->fetch(PDO::FETCH_ASSOC)) {
+                    extract($row_category);
+                    echo "<option value='{$id}'>{$name}</option>";
+                }
+                echo "</select>";
+                ?>
+            </td>
+        </tr>
+        <tr>
             <td>Content</td>
             <td><textarea name="content" rows="5" cols="22"></textarea></td>
         </tr>

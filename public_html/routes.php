@@ -12,6 +12,12 @@ function call($controller, $action) {
             require_once('models/post.php');
             $controller = new PostsController();
             break;
+        case 'categories':
+            // necesitamos el modelo para después consultar a la BBDD
+// desde el controlador
+            require_once('models/category.php');
+            $controller = new CategoriesController();
+            break;
     }
 
     // llama al método guardado en $action
@@ -22,7 +28,8 @@ function call($controller, $action) {
 // consideramos estos valores "permitidos"
 // agregando una entrada para el nuevo controlador y sus acciones.
 $controllers = array('pages' => ['home', 'error'],
-    'posts' => ['index', 'show', 'insert', 'formInsert', 'update', 'formUpdate', 'delete']);
+    'posts' => ['index', 'show', 'insert', 'formInsert', 'update', 'formUpdate', 'delete'],
+    'categories' => ['indexCat','showCat', 'insertCat', 'formInsertCat', 'updateCat', 'formUpdateCat', 'deleteCat']);
 // verifica que tanto el controlador como la acción solicitados estén permitidos
 // Si alguien intenta acceder a otro controlador y/o acción, será redirigido al
 //método de error del controlador de pages.

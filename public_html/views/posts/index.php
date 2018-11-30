@@ -1,4 +1,4 @@
-<p><strong>Listado de los posts:</strong></p>
+<p><strong>Listado de los posts:</strong><a href='?controller=posts&action=insert'>Insertar</a></p>
 <?php foreach ($posts as $post) { ?>
     <p>
         <?php echo $post->author; ?>
