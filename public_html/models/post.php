@@ -38,7 +38,11 @@ class Post {
         return $list;
     }
 
-    public static function find($id) {
+    public static function find() {
+        if (!isset($_GET['id'])) {
+            return call('pages', 'error');
+        }
+        $id = $_GET['id'];
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $id = intval($id);
@@ -49,7 +53,17 @@ class Post {
         return new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image'], $post['category_id']);
     }
 
-    public static function insert($title, $author, $content, $image, $catId) {
+    public static function insert() {
+        $title = $_POST["title"];
+        $author = $_POST["author"];
+        $content = $_POST["content"];
+        $image = !empty($_FILES["image"]["name"]) ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"]) : "";
+        $catId = $_POST["category_id"];
+
+        if (!isset($title) && !isset($author) && !isset($content) && !isset($image) && !isset($catId)) {
+            return call('pages', 'error');
+        }
+
         //echo $title, $author, $content, $image;
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
@@ -68,7 +82,23 @@ class Post {
         Post::uploadPhoto($image);
     }
 
-    public static function update($id, $title, $author, $content, $image, $actuFoto, $catId) {
+    public static function update() {
+        $id = $_POST["id"];
+        $title = $_POST["title"];
+        $author = $_POST["author"];
+        $content = $_POST["content"];
+        $image = !empty($_FILES["image"]["name"]) ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"]) : "";
+        if (empty($image)) {
+            $actuFoto = false;
+            $image = $_POST["imageDefault"];
+        } else if ($image != $_POST["imageDefault"]) {
+            $actuFoto = true;
+        }
+        $catId = $_POST["category_id"];
+
+        if (!isset($id) && !isset($title) && !isset($author) && !isset($content) && !isset($image) && !isset($catId)) {
+            return call('pages', 'error');
+        }
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $req = $db->prepare('UPDATE posts SET title = :title, author = :author, content = :content, modified = :modified, image = :image, category_id = :category_id WHERE id = :id');
@@ -89,7 +119,11 @@ class Post {
         }
     }
 
-    public static function delete($id) {
+    public static function delete() {
+        if (!isset($_GET['id'])) {
+            return call('pages', 'error');
+        }
+        $id = $_GET['id'];
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $req = $db->prepare('DELETE FROM posts WHERE id = :id');
@@ -166,26 +200,6 @@ class Post {
         }
 
         return $result_message;
-    }
-
-    function readCat() {
-        /*
-          $list = [];
-          $db = Db::getInstance();
-          $req = $db->query('SELECT * FROM categories ORDER BY name');
-
-          // creamos una lista de objectos post y recorremos la respuesta de la
-          // consulta
-          foreach ($req->fetchAll() as $cat) {
-          $list[] = new Post($cat['id'], $cat['name'], $cat['created'], $cat['modified']);
-          }
-          return $list;
-         */
-        $db = Db::getInstance();
-        //select all data
-        $stmt = $db->query('SELECT * FROM categories ORDER BY name');
-        $stmt->execute();
-        return $stmt;
     }
 
 }

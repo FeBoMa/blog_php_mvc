@@ -10,6 +10,7 @@ function call($controller, $action) {
             // necesitamos el modelo para después consultar a la BBDD
 // desde el controlador
             require_once('models/post.php');
+            require_once('models/category.php');
             $controller = new PostsController();
             break;
         case 'categories':
