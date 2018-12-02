@@ -30,7 +30,11 @@ class Category {
         return $list;
     }
 
-    public static function findCat($id) {
+    public static function findCat() {
+        if (!isset($_GET['id'])) {
+            return call('pages', 'error');
+        }
+        $id = $_GET['id'];
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $id = intval($id);
@@ -41,7 +45,12 @@ class Category {
         return new Category($category['id'], $category['name'], $category['created'], $category['modified']);
     }
 
-    public static function insert($name) {
+    public static function insert() {
+
+        if (!isset($_POST["name"])) {
+            return call('pages', 'error');
+        }
+        $name = $_POST["name"];
         //echo $title, $author, $content, $image;
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
@@ -55,7 +64,12 @@ class Category {
         $req->execute();
     }
 
-    public static function update($id, $name) {
+    public static function update() {
+        if (!isset($_POST["id"]) && !isset($_POST["name"])) {
+            return call('pages', 'error');
+        }
+        $id = $_POST["id"];
+        $name = $_POST["name"];
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $req = $db->prepare('UPDATE categories SET name = :name, modified = :modified WHERE id = :id');
@@ -69,7 +83,11 @@ class Category {
         $req->execute();
     }
 
-    public static function delete($id) {
+    public static function delete() {
+        if (!isset($_GET['id'])) {
+            return call('pages', 'error');
+        }
+        $id = $_GET['id'];
         $db = Db::getInstance();
         // nos aseguramos que $id es un entero
         $req = $db->prepare('DELETE FROM categories WHERE id = :id');
@@ -77,6 +95,22 @@ class Category {
         // preparamos la sentencia y reemplazamos :id con el valor de $id
         $req->bindParam(":id", $id);
         $req->execute();
+    }
+
+    function readCat() {
+        $db = Db::getInstance();
+        $stmt = $db->query('SELECT * FROM categories ORDER BY name');
+        $stmt->execute();
+        return $stmt;
+    }
+
+    function readNameCatId($idCat) {
+        $db = Db::getInstance();
+        $id = intval($idCat);
+        $req = $db->prepare('SELECT name FROM categories WHERE id = :id');
+        $req->execute(array('id' => $id));
+        $catName = $req->fetch();
+        return $catName['name'];
     }
 }
 
